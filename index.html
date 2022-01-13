@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chart JS</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.6.2/dist/chart.min.js"></script>
+
+</head>
+<body>
+    
+    <canvas id="myChart" width="400" height="400"></canvas>
+
+
+    <script>
+        
+        
+        // Chart JS: 
+        const cLabels = [];
+        const xLabels = [];
+        const yLabels = [];
+        const zLabels = [];
+        const wLabels = [];
+        let url = "https://api.covid19api.com/summary";
+        
+        chartJS();
+        
+        
+        async function chartJS() {
+            await fetchData();
+        // function chartJS() {
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const myChart = new Chart(ctx, {
+    type: 'bar',
+    // type: 'line',
+    data: {
+        labels: cLabels,
+        datasets: [
+        
+        {
+            label: 'New Deaths',
+            data: xLabels,
+            fill: false,
+            backgroundColor: ['rgba(25, 99, 132, 0.5)'],
+            borderColor: ['rgba(255, 99, 132, 1)'],
+            borderWidth: 2
+        },
+        {
+            label: 'New Confirmed',
+            data: yLabels,
+            fill: false,
+            backgroundColor: ['blue'],
+            borderColor: ['blue'],
+            borderWidth: 2
+        },
+        {
+            label: 'Total Confirmed',
+            data: zLabels,
+            fill: false,
+            backgroundColor: ['pink'],
+            borderColor: ['grey'],
+            borderWidth: 2,
+        },
+        {
+            label: 'Total Deaths',
+            data: wLabels,
+            fill: false,
+            backgroundColor: ['purple'],
+            borderColor: ['black'],
+            borderWidth: 2
+        },        
+         ]
+    }
+});
+}
+
+
+async function fetchData() {
+    const res = await fetch(url);
+    const data = await res.json();
+    // for Overall data: 
+    // console.log(data)
+
+    // for global Array in this Data Object: 
+    // console.log(data.Global);
+
+
+    // fetching data by destructuring from Global inside data: 
+    // const {NewConfirmed, NewDeaths, TotalConfirmed, TotalDeaths } = data.Global;
+    // console.log(NewConfirmed)
+
+
+    for(var i=0; i<data.Countries.length; i++){
+    var {Country,NewDeaths, NewConfirmed, TotalConfirmed, TotalDeaths} = data.Countries[i];
+    console.log(data.Countries[i])
+    cLabels.push(Country)
+    xLabels.push(parseFloat(NewDeaths))
+    yLabels.push(parseFloat(NewConfirmed))
+    zLabels.push(parseFloat(TotalConfirmed))
+    wLabels.push(parseFloat(TotalDeaths))       
+}
+}
+</script>
+</body>
+</html>
